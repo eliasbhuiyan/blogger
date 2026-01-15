@@ -74,5 +74,74 @@ const verifymailTemplate = (otp, name) => {
     `;
 };
 
+const resetPasswordTemplate = (resetLink, name) => {
+  return `
+  <body style="margin:0; padding:0; background-color:#f4f6f8; font-family:Arial, Helvetica, sans-serif;">
+    <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#f4f6f8; padding:20px 0;">
+      <tr>
+        <td align="center">
+          <table width="600" cellpadding="0" cellspacing="0" style="background-color:#ffffff; border-radius:6px; overflow:hidden;">
+            
+            <!-- Header -->
+            <tr>
+              <td style="background-color:#2563eb; padding:24px; text-align:center;">
+                <span style="color:#ffffff; font-size:22px; font-weight:bold;">
+                  Password Reset
+                </span>
+              </td>
+            </tr>
 
-module.exports = { verifymailTemplate };
+            <!-- Body -->
+            <tr>
+              <td style="padding:32px; color:#333333; font-size:15px; line-height:1.6;">
+                <p style="margin:0 0 16px 0;">
+                  Hello, <strong>${name}</strong>
+                </p>
+
+                <p style="margin:0 0 16px 0;">
+                  We received a request to reset your password. Click the button below to choose a new one.
+                </p>
+
+                <!-- Button -->
+                <table cellpadding="0" cellspacing="0" style="margin:24px 0;">
+                  <tr>
+                    <td align="center">
+                      <a href="${resetLink}" target="_blank"
+                         style="background-color:#2563eb; color:#ffffff; text-decoration:none; padding:12px 24px; border-radius:4px; display:inline-block; font-size:15px; font-weight:bold;">
+                        Reset Password
+                      </a>
+                    </td>
+                  </tr>
+                </table>
+
+                <p style="margin:0 0 16px 0;">
+                  This link will expire in <strong>10 minutes</strong>. If you did not request a password reset, you can safely ignore this email.
+                </p>
+
+                <p style="margin:0;">
+                  Thanks,<br />
+                  <span style="font-weight:bold;">The Support Team</span>
+                </p>
+              </td>
+            </tr>
+
+            <!-- Footer -->
+            <tr>
+              <td style="background-color:#f4f6f8; padding:16px; text-align:center; font-size:12px; color:#777777;">
+                <p style="margin:0;">
+                  If the button doesn’t work, copy and paste this link into your browser:
+                </p>
+                <p style="margin:8px 0 0 0; word-break:break-all;">
+                  ${resetLink}
+                </p>
+              </td>
+            </tr>
+
+          </table>
+        </td>
+      </tr>
+    </table>
+  </body>`
+}
+
+module.exports = { verifymailTemplate, resetPasswordTemplate };
