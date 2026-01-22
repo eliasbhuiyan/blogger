@@ -39,4 +39,10 @@ const generateResetPasswordToken = () => {
   return { resetPasswordToken, hashedToken };
 };
 
-module.exports = { generateOTP, generateAccessToken, generateRefreshToken, generateResetPasswordToken };
+const generateBlogSlug = (title) => {
+  return title
+    .toLowerCase()
+    .replace(/\s+/g, "-");
+};
+
+module.exports = { generateOTP, generateAccessToken, generateRefreshToken, generateResetPasswordToken, generateBlogSlug };

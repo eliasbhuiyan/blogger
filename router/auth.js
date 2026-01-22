@@ -1,6 +1,8 @@
 const express = require('express');
-const { register, verifyOTP, loginUser, forgatePassword, resetPassword, getUserProfile } = require('../controllers/authController');
+const { register, verifyOTP, loginUser, forgatePassword, resetPassword, getUserProfile, updateProfile } = require('../controllers/authController');
 const authMiddleware = require('../middleware/authMiddleware');
+const multer = require('multer');
+const upload = multer();
 const router = express.Router();
 
 router.post('/register', register)
@@ -9,4 +11,5 @@ router.post('/login', loginUser)
 router.post("/forgate-password", forgatePassword);
 router.post("/reset-password/:token", resetPassword);
 router.get("/profile", authMiddleware, getUserProfile);
+router.put("/profile", authMiddleware, upload.single('avatar'), updateProfile);
 module.exports = router;

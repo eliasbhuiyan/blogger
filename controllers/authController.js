@@ -12,6 +12,7 @@ const {
   generateRefreshToken,
   generateResetPasswordToken,
 } = require("../services/utils");
+const { uploadToCloudinary, deleteFromCloudinary } = require("../services/cloudinaryConfig");
 
 const register = async (req, res) => {
   try {
@@ -119,7 +120,7 @@ const forgatePassword = async (req, res) => {
       "Reset Your Password",
       resetPassLink,
       resetPasswordTemplate,
-      existingUser.fullName
+      existingUser.fullName,
     );
     responseHandler.success(res, "Password reset link sent to your email");
   } catch (error) {
@@ -129,20 +130,19 @@ const forgatePassword = async (req, res) => {
 
 const resetPassword = async (req, res) => {
   try {
-    const {newPassword} = req.body;
-    const {token} = req.params;
-    if(!newPassword) return responseHandler.error(res, "New Password is required", 400);
-    if(!token) return responseHandler.error(res, "Invalid Request", 400);
-    const hashedToken = crypto
-      .createHash("sha256")
-      .update(token)
-      .digest("hex");
+    const { newPassword } = req.body;
+    const { token } = req.params;
+    if (!newPassword)
+      return responseHandler.error(res, "New Password is required", 400);
+    if (!token) return responseHandler.error(res, "Invalid Request", 400);
+    const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
 
     const user = await userSchema.findOne({
       resetPasswordToken: hashedToken,
       resetPasswordExpiry: { $gt: Date.now() },
     });
-    if (!user) return responseHandler.error(res, "Invalid or expired token", 400);
+    if (!user)
+      return responseHandler.error(res, "Invalid or expired token", 400);
     user.password = newPassword;
     user.resetPasswordToken = null;
     user.resetPasswordExpiry = null;
@@ -155,11 +155,44 @@ const resetPassword = async (req, res) => {
 
 const getUserProfile = async (req, res) => {
   try {
-    const user = await userSchema.findById(req.user._id).select("fullName email role avatar");
+    const user = await userSchema
+      .findById(req.user._id)
+      .select("fullName email role avatar");
     responseHandler.success(res, "User profile fetched successfully", user);
   } catch (error) {
     responseHandler.error(res, "Internal Server Error");
   }
 };
 
-module.exports = { register, verifyOTP, loginUser, forgatePassword, resetPassword, getUserProfile };
+const updateProfile = async (req, res) => {
+  try {
+    const { fullName } = req.body;
+    
+    const user = await userSchema
+      .findById(req.user._id)
+      .select("fullName email role avatar");
+    
+    if(fullName) user.fullName = fullName;
+    
+    if (req.file) {
+      deleteFromCloudinary(user.avatar);
+      const image = await uploadToCloudinary(req.file.buffer);
+      if (image?.secure_url) user.avatar = image.secure_url;
+    }
+
+    user.save()
+    responseHandler.success(res, "Profile updated successfully", user);
+  } catch (error) {
+    responseHandler.error(res, "Internal Server Error");
+  }
+};
+
+module.exports = {
+  register,
+  verifyOTP,
+  loginUser,
+  forgatePassword,
+  resetPassword,
+  getUserProfile,
+  updateProfile,
+};
