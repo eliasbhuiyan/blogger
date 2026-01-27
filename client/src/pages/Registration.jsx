@@ -31,7 +31,6 @@ const Registration = () => {
                         Registration to Your Account
                     </h2>
                 </Card.Header>
-
                 <Card.Body>
                     <form onSubmit={handleSubmit} className="space-y-4">
                         <Input

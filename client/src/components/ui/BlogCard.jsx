@@ -9,9 +9,10 @@ const BlogCard = ({
     date,
     readTime,
     slug,
+    className = "",
 }) => {
     return (
-        <div className="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm hover:shadow-md transition-shadow">
+        <div className={`overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm hover:shadow-md transition-shadow ${className}`}>
             {/* Image */}
             {image && (
                 <img
