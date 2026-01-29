@@ -1,7 +1,12 @@
 import React from 'react'
 import BlogCard from '../components/ui/BlogCard'
+import { useGetBlogListQuery } from '../service/api'
 
 const Home = () => {
+    const { data, isLoading, error } = useGetBlogListQuery()
+    console.log(data);
+
+
     return (
         <div className='container my-40 space-y-4 grid grid-cols-3 gap-4'>
             <BlogCard
