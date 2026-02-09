@@ -45,4 +45,8 @@ const generateBlogSlug = (title) => {
     .replace(/\s+/g, "-");
 };
 
-module.exports = { generateOTP, generateAccessToken, generateRefreshToken, generateResetPasswordToken, generateBlogSlug };
+const verifyToken = (token) => {
+  return jwt.verify(token, process.env.JWT_SECRET);
+};
+
+module.exports = { generateOTP, generateAccessToken, generateRefreshToken, generateResetPasswordToken, generateBlogSlug, verifyToken };

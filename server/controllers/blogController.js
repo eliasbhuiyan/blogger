@@ -5,7 +5,7 @@ const { generateBlogSlug } = require("../services/utils");
 const createBlog = async (req, res) => {
   try {
     const { title, content, isActive, tags } = req.body;
-    const authorId = req.user._id;
+    // const authorId = req.user._id;
     if (!title) {
       return responseHandler.error(res, "Title is required", 400);
     }
@@ -27,7 +27,7 @@ const createBlog = async (req, res) => {
       title,
       slug,
       content,
-      author: authorId,
+      author: "6967baa6465e8e92c3d60dc0",
       isActive: isActive === "true" ? true : false,
       tags: tags ? tags.split(",").map((tag) => tag.trim()) : [],
     });
@@ -35,6 +35,8 @@ const createBlog = async (req, res) => {
 
     responseHandler.success(res, "Blog created successfully", newBlog);
   } catch (error) {
+    console.log(error);
+
     responseHandler.error(res, "Internal Server Error");
   }
 };
@@ -76,6 +78,8 @@ const blogList = async (req, res) => {
         totalPages: Math.ceil(totalCount / limit),
       },
     };
+    console.log("blog list");
+
 
     responseHandler.success(res, "", simplifyRes);
   } catch (error) {
@@ -83,4 +87,33 @@ const blogList = async (req, res) => {
   }
 };
 
-module.exports = { createBlog, getBlog, blogList };
+const blogListByUser = async (req, res) => {
+  try {
+    console.log("blog list by user");
+
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
+    const totalCount = await blogSchema.countDocuments();
+    const blogs = await blogSchema
+      .find({ author: req.user._id }).populate("author", "fullName")
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit);
+
+    const simplifyRes = {
+      data: blogs,
+      pagination: {
+        page,
+        limit,
+        totalItems: totalCount,
+        totalPages: Math.ceil(totalCount / limit),
+      },
+    };
+    responseHandler.success(res, "", simplifyRes);
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+module.exports = { createBlog, getBlog, blogList, blogListByUser };

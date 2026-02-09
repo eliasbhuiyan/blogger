@@ -5,7 +5,12 @@ const router = require("./router");
 const cookieParser = require("cookie-parser");
 require("dotenv").config();
 app.use(express.json());
-app.use(cors());
+app.use(cors(
+  {
+    origin: process.env.CLIENT_URL,
+    credentials: true,
+  }
+));
 const dbConfig = require("./dbconfig");
 app.use(cookieParser());
 dbConfig();

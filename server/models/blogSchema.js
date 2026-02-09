@@ -11,6 +11,12 @@ const blogSchema = new mongoose.Schema(
     },
     isActive: { type: Boolean, default: true },
     tags: [{ type: String }],
+    // comments: [
+    //   {
+    //     type: mongoose.Types.ObjectId,
+    //     ref: "comment"
+    //   }
+    // ]
   },
   { timestamps: true },
 );

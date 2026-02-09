@@ -2,9 +2,12 @@ import React, { useState } from "react";
 import Input from "../components/ui/Input";
 import Button from "../components/ui/Button";
 import Card from "../components/ui/Card";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
+import { useLoginMutation } from "../service/api";
 
 const Login = () => {
+    const [login, { isLoading, isSuccess }] = useLoginMutation()
+    const navigate = useNavigate()
     const [formData, setFormData] = useState({
         email: "",
         password: "",
@@ -17,10 +20,19 @@ const Login = () => {
         });
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log("Sign In Data:", formData);
+        try {
+            const res = await login(formData).unwrap();
+            if (res.success) {
+                navigate("/dashboard")
+            }
+        } catch (error) {
+            console.error(error.data.message);
+        }
     };
+
+
 
     return (
         <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4">
@@ -40,7 +52,6 @@ const Login = () => {
                             placeholder="you@example.com"
                             value={formData.email}
                             onChange={handleChange}
-                            required
                         />
 
                         <Input
@@ -50,7 +61,6 @@ const Login = () => {
                             placeholder="********"
                             value={formData.password}
                             onChange={handleChange}
-                            required
                         />
 
                         <div className="flex items-center justify-between text-sm">
@@ -67,8 +77,8 @@ const Login = () => {
                             </Link>
                         </div>
 
-                        <Button type="submit" className="w-full">
-                            Sign In
+                        <Button disabled={isLoading} type="submit" className="w-full">
+                            {isLoading ? "Signing In..." : "Sign In"}
                         </Button>
                     </form>
                 </Card.Body>

@@ -1,7 +1,9 @@
 import React from "react";
 import { Link } from "react-router";
+import { useGetUserQuery } from "../../service/api";
 
 const Navbar = () => {
+    const { data, isLoading, error } = useGetUserQuery()
     return (
         <nav className="border-b border-gray-200 bg-white">
             <div className="mx-auto max-w-7xl px-4">
@@ -70,3 +72,9 @@ const Navbar = () => {
 };
 
 export default Navbar;
+
+
+// Backend server structure
+// RTK query
+// Socket
+// NextJs 

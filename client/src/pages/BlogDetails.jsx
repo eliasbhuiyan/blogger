@@ -2,22 +2,31 @@ import React from 'react'
 import BlogCard from '../components/ui/BlogCard'
 import Input from '../components/ui/Input'
 import Button from '../components/ui/Button'
+import { useBlogDetailsQuery } from '../service/api'
+import Loading from '../components/ui/Loading'
+import { useParams } from 'react-router'
 
 const BlogDetails = () => {
+    const { slug } = useParams()
+    const { data, isLoading, error } = useBlogDetailsQuery(slug)
+    if (isLoading) return <Loading />
+    console.log(data)
     return (
         <section>
             <div className="container my-40">
                 {/* Blog Details */}
-                <BlogCard
-                    title="How to Build a Blog with React"
-                    description="Learn how to build a blog website using React, Tailwind CSS, and React Router..."
-                    image="https://images.unsplash.com/photo-1503676260728-1c00da094a0b"
-                    author="John Doe"
-                    date="Jan 20, 2026"
-                    readTime={6}
-                    slug="build-blog-with-react"
-                    className="col-span-2"
-                />
+                <div className="flex items-center justify-between text-sm text-gray-500">
+                    <span>{data?.data?.author?.fullName}</span>
+                    <span>{new Date(data?.data?.createdAt).toLocaleDateString()}</span>
+                </div>
+
+                {/* Title */}
+                <h3 className="mt-3 text-xl font-semibold text-gray-800">
+                    {data?.data?.title}
+                </h3>
+
+                {/* Description */}
+                <div className="mt-2 text-gray-600 line-clamp-3 overflow-visible whitespace-normal block" dangerouslySetInnerHTML={{ __html: data?.data?.content }} />
 
                 {/* Leave comment */}
                 <div className="mt-10">

@@ -11,6 +11,7 @@ const {
   generateAccessToken,
   generateRefreshToken,
   generateResetPasswordToken,
+  verifyToken,
 } = require("../services/utils");
 const { uploadToCloudinary, deleteFromCloudinary } = require("../services/cloudinaryConfig");
 
@@ -167,13 +168,13 @@ const getUserProfile = async (req, res) => {
 const updateProfile = async (req, res) => {
   try {
     const { fullName } = req.body;
-    
+
     const user = await userSchema
       .findById(req.user._id)
       .select("fullName email role avatar");
-    
-    if(fullName) user.fullName = fullName;
-    
+
+    if (fullName) user.fullName = fullName;
+
     if (req.file) {
       deleteFromCloudinary(user.avatar);
       const image = await uploadToCloudinary(req.file.buffer);
@@ -187,6 +188,23 @@ const updateProfile = async (req, res) => {
   }
 };
 
+const refreshAccessToken = async (req, res) => {
+  try {
+    const refreshToken = req.cookies["X-Ref_Tkn"];
+    if (!refreshToken) return responseHandler.error(res, "Unauthorized access", 401);
+    const decoded = verifyToken(refreshToken);
+    if (!decoded) return responseHandler.error(res, "Unauthorized access", 401);
+    const accessToken = generateAccessToken(decoded._id, decoded.email, decoded.role);
+    res.cookie("X-Acc_Tkn", accessToken, {
+      httpOnly: true,
+      secure: false,
+    });
+    responseHandler.success(res, "Access token refreshed successfully");
+  } catch (error) {
+    responseHandler.error(res, "Internal Server Error");
+  }
+}
+
 module.exports = {
   register,
   verifyOTP,
@@ -195,4 +213,5 @@ module.exports = {
   resetPassword,
   getUserProfile,
   updateProfile,
+  refreshAccessToken
 };

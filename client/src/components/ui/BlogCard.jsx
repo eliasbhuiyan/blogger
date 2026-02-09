@@ -26,7 +26,7 @@ const BlogCard = ({
                 {/* Meta */}
                 <div className="flex items-center justify-between text-sm text-gray-500">
                     <span>{author}</span>
-                    <span>{date}</span>
+                    <span>{new Date(date).toLocaleDateString()}</span>
                 </div>
 
                 {/* Title */}
@@ -35,9 +35,7 @@ const BlogCard = ({
                 </h3>
 
                 {/* Description */}
-                <p className="mt-2 text-gray-600 line-clamp-3">
-                    {description}
-                </p>
+                <div className="mt-2 text-gray-600 line-clamp-3" dangerouslySetInnerHTML={{ __html: description.slice(0, 100) + "..." }} />
 
                 {/* Footer */}
                 <div className="mt-4 flex items-center justify-between">

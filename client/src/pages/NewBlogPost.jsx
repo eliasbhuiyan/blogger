@@ -1,10 +1,13 @@
 import { useState } from "react";
 import TiptapEditor from "../components/utils/TipTapEditor";
+import { useCreateBlogMutation } from "../service/api";
 
 export default function NewBlogPost() {
+  const [createBlog, { isLoading }] = useCreateBlogMutation();
   const [title, setTitle] = useState("");
   const [slug, setSlug] = useState("");
   const [content, setContent] = useState("");
+
 
   const handleTitleChange = (e) => {
     const value = e.target.value;
@@ -13,35 +16,35 @@ export default function NewBlogPost() {
       value
         .toLowerCase()
         .replace(/[^a-z0-9]+/g, "-")
-        .replace(/(^-|-$)+/g, "")
+        .replace(/(^-|-$)+/g, ""),
     );
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     const blogData = {
       title,
       slug,
-      content, // HTML from Tiptap
+      content,
     };
-
-    console.log("Blog submitted:", blogData);
-
-    // TODO: POST to backend
+    try {
+      const res = await createBlog(blogData).unwrap();
+      console.log(res);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
-    <div className='w-full'>
+    <div className="w-full">
       <div className="container p-6">
         <h1 className="text-2xl font-bold mb-6">Create New Blog</h1>
 
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Title */}
           <div>
-            <label className="block text-sm font-medium mb-1">
-              Blog Title
-            </label>
+            <label className="block text-sm font-medium mb-1">Blog Title</label>
             <input
               type="text"
               value={title}
@@ -54,9 +57,7 @@ export default function NewBlogPost() {
 
           {/* Slug */}
           <div>
-            <label className="block text-sm font-medium mb-1">
-              Slug
-            </label>
+            <label className="block text-sm font-medium mb-1">Slug</label>
             <input
               type="text"
               value={slug}
@@ -68,9 +69,7 @@ export default function NewBlogPost() {
 
           {/* Content */}
           <div>
-            <label className="block text-sm font-medium mb-2">
-              Content
-            </label>
+            <label className="block text-sm font-medium mb-2">Content</label>
             <TiptapEditor content={content} onChange={setContent} />
           </div>
 
