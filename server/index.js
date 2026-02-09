@@ -9,8 +9,9 @@ console.log(process.env.CLIENT_URL);
 
 app.use(cors(
   {
-    origin: [process.env.CLIENT_URL],
-    credentials: true,
+    origin: 'https://blogger-client-site.vercel.app',
+    allowedHeaders: ['Content-Type', 'Authorization'], // Specify allowed headers
+    credentials: true // Set to true if your app uses cookies or auth tokens
   }
 ));
 const dbConfig = require("./dbconfig");
