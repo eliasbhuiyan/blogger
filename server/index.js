@@ -4,14 +4,14 @@ const app = express();
 const router = require("./router");
 const cookieParser = require("cookie-parser");
 require("dotenv").config();
+
+app.options("*", cors({
+  origin: "https://blogger-client-site.vercel.app",
+  credentials: true
+}));
+
 app.use(express.json());
 
-app.use(cors(
-  {
-    origin: 'https://blogger-client-site.vercel.app',
-    credentials: true
-  }
-));
 const dbConfig = require("./dbconfig");
 app.use(cookieParser());
 dbConfig();
