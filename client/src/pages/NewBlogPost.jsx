@@ -1,5 +1,5 @@
 import { useState } from "react";
-import TiptapEditor from "../components/utils/TipTapEditor";
+import TiptapEditor from "../components/utils/TiptapEditor";
 import { useCreateBlogMutation } from "../service/api";
 
 export default function NewBlogPost() {
