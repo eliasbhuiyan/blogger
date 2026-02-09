@@ -2,7 +2,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 export const api = createApi({
   reducerPath: "api",
-  baseQuery: fetchBaseQuery({ baseUrl: "https://blogger-server-site.vercel.app", credentials: "include" }),
+  baseQuery: fetchBaseQuery({ baseUrl: "https://blogger-server-site.vercel.app", credentials: "same-origin" }),
   tagTypes: ["Blog"],
   endpoints: (builder) => ({
     login: builder.mutation({
